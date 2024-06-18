@@ -1,3 +1,7 @@
+// let img = document.createElement("img");
+// img.src = new URL("assets/star-icon.svg", import.meta.url);
+// document.body.appendChild(img);
+
 //------- Serge part -------
 let searchInput = "";
 let movieGenres = [];
@@ -191,6 +195,11 @@ function clearChildren(element) {
 }
 
 function ShowSearchResultCardUI(movie) {
+  const favIconSelected = new URL("assets/heart-icon-selected.svg", import.meta.url);
+  const favIcon = new URL("assets/heart-icon.svg", import.meta.url);
+  const starIcon = new URL("assets/star-icon.svg", import.meta.url);
+  const noImage = new URL("assets/search-no-image.png", import.meta.url);
+
   const imageURL = `https://image.tmdb.org/t/p/w300/${movie.poster_path}`;
   let genre = "";
   for (let genreId of movie.genre_ids) genre += movieGenres.find((x) => x.id === genreId).name + ", ";
@@ -208,7 +217,7 @@ function ShowSearchResultCardUI(movie) {
         <p class="text-md">
          ${movie.release_date.length > 0 ? movie.release_date.slice(0, -6) : ""}</p>
         <span class="flex font-semibold text-sm text-center">
-        <img src="./src/assets/star-icon.svg" alt="star" width="16px" class="flex mr-2"/>
+        <img src=${starIcon} alt="star" width="16px" class="flex mr-2"/>
          ${movie.vote_average.toFixed(1)}</span>
         <span class="font-semibold text-sm text-right italic text-[#00b9ae]">
          ${genre}</span>
@@ -227,7 +236,7 @@ function ShowSearchResultCardUI(movie) {
   movieEl.querySelector("#search-movie-title").onclick = () => openDetails();
   const img = movieEl.querySelector("img");
   img.onclick = () => openDetails();
-  img.onerror = () => (img.src = "./src/assets/search-no-image.png");
+  img.onerror = () => (img.src = noImage);
   cardsContainerEl.appendChild(movieEl);
 
   //add to favorites
@@ -247,12 +256,12 @@ function ShowSearchResultCardUI(movie) {
   };
 
   function removeFromFavoritesUI() {
-    favBtn.children[1].src = "./src/assets/heart-icon.svg";
+    favBtn.children[1].src = favIcon;
     favBtn.children[1].id = "";
   }
 
   function addToFavoritesUI() {
-    favBtn.children[1].src = "./src/assets/heart-icon-selected.svg";
+    favBtn.children[1].src = favIconSelected;
     favBtn.children[1].id = "fav";
   }
 
@@ -320,7 +329,7 @@ function cardUI(movie) {
             ${movie.release_date.length > 0 ? movie.release_date.slice(0, -6) : ""}
           </span>
           <span class="flex font-semibold text-sm text-center">
-            <img src="src/assets/star-icon.svg" alt="star" width="16px" class="flex mr-2"/>
+            <img src="assets/star-icon.svg" alt="star" width="16px" class="flex mr-2"/>
             ${movie.vote_average.toFixed(1)}
           </span>
         </div>
