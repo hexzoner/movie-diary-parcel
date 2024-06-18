@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Movie Diary</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="src/styles.css" />
+    <script src="src/main.js" defer></script>
+  </head>
+  <body class="bg-[#16181e] font-[lato]">
+    <header class="bg-[#21242D]">
+      <div class="h-[173px] md:h-[123px] max-w-[1120px] m-auto text-[#F9F9F9] relative top-9">
+        <div class="flex justify-between items-center font-semibold text-2xl flex-wrap gap-3">
+          <img class="max-w-[70px] ml-2 xl:ml-0" src="src/assets/tmbd-logo.svg" alt="" />
+          <a href="index.html" class="hover:cursor-pointer underline text-[#00B9AE]">Home</a>
+          <a href="journal.html" class="hover:cursor-pointer mr-4 md:mr-0">My Journal</a>
+          <div class="flex mr-8 xl:mr-0 w-full md:w-auto ml-[-30px] md:ml-0">
+            <div class="px-4 left-[53px] rounded-l-[13px] relative opacity-50" id="search-img-wrapper">
+              <img class="relative w-fit top-[17px]" src="src/assets/Search.png" alt="" id="search-img" />
+            </div>
+
+            <form id="search-form" class="w-full">
+              <input
+                class="bg-[#21242D] border-solid border-[#F9F9F9] border-opacity-10 rounded-xl border-[1px] pl-[64px] h-[56px] font-medium text-lg w-full md:w-[250px] lg:w-[537px]"
+                type="text"
+                id="search"
+                name="search"
+                placeholder="Search" />
+            </form>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <dialog close id="search-dialog" class="border-[#00b9ae] border-2 border-opacity-50 mx-auto max-w-[1000px] container py-4 bg-[#21242d] text-[white] px-4">
+      <div class="flex justify-between items-center gap-1 mb-4 flex-wrap">
+        <div>
+          <p id="search-keyword" class="text-xl">Search results for: "Terminator"</p>
+          <div class="flex gap-3 items-center">
+            <p id="search-found">Found: 450</p>
+            <!-- <p id="search-current-page" class="rounded-lg ml-4">Page: 1</p> -->
+            <p id="search-total-pages" class="ml-0">Total Pages: 34</p>
+          </div>
+        </div>
+        <div class="flex gap-3 flex-wrap justify-center w-fit items-center">
+          <button id="search-prev" class="bg-[#00b9ae] rounded px-2 py-1 h-fit font-extrabold text-2xl text-[#21242d] hover:bg-[#8ffdf6]"><</button>
+          <div id="search-pages" class="h-fit"></div>
+          <button id="search-next" class="bg-[#00b9ae] rounded px-2 py-1 h-fit font-extrabold text-2xl text-[#21242d] hover:bg-[#8ffdf6]">></button>
+        </div>
+      </div>
+      <div id="search-results" class="grid grid-cols-1 xl:grid-cols-2 gap-2"></div>
+    </dialog>
+
+    <!-- Cards movies Section // Erika -->
+    <section class="mx-auto max-w-[1120px] container py-12">
+      <h1 class="font-bold text-5xl text-center mb-12 text-white">Our popular movies of the week</h1>
+      <div id="cards-container" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+        <!-- Movie cards cards will be here -->
+      </div>
+    </section>
+    <footer class="bg-[#21242D] flex items-center justify-center gap-6 mx-auto py-8 px-2">
+      <img class="max-w-[70px] ml-2" src="src/assets/tmbd-logo.svg" alt="Logo" />
+      <small class="font-semibold sm:text-lg md:text-xl font-[lato] text-[#F9F9F9]">&copy; 2024 Movie Diary. All rights reserved.</small>
+    </footer>
+  </body>
+</html>
