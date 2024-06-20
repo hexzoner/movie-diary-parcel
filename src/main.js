@@ -24,7 +24,11 @@ document.onclick = (e) => {
 
   if (!FindParentElement(dialogEl, e.target) && dialogEl.open) {
     dialogEl.close();
-    if (location.pathname.substring(location.pathname.lastIndexOf("/") + 1) == "journal.html") location.reload();
+    if (
+      location.pathname.substring(location.pathname.lastIndexOf("/") + 1) ==
+      "journal.html"
+    )
+      location.reload();
   }
 };
 
@@ -33,7 +37,10 @@ GetGenres(); //API call to get the genres from the server
 // ----Adding and Removing from Favorites using LocalStorage
 let favorites = [];
 const favKey = "search-favorites";
-window.addEventListener("load", () => (favorites = JSON.parse(localStorage.getItem(favKey)) || []));
+window.addEventListener(
+  "load",
+  () => (favorites = JSON.parse(localStorage.getItem(favKey)) || [])
+);
 
 function AddToFavoritesStorage(movie) {
   if (favorites.includes(movie)) return;
@@ -99,7 +106,11 @@ function FindParentElement(elementToFind, startingElement) {
 }
 
 function ProcessSearch(event) {
-  const highlighted = ["bg-[#3ae4de50]", "hover:cursor-pointer", "hover:bg-[#238a83]"];
+  const highlighted = [
+    "bg-[#3ae4de50]",
+    "hover:cursor-pointer",
+    "hover:bg-[#238a83]",
+  ];
   const searchImg = document.getElementById("search-img-wrapper");
 
   searchInput = event.target.value;
@@ -155,14 +166,16 @@ function ProcessSearchResults(data) {
 
     if (data.total_pages > 1 && data.page < data.total_pages) {
       nextBtn.classList.remove("hidden");
-      nextBtn.onclick = () => GetSearchResults(searchInputEl.value, data.page + 1);
+      nextBtn.onclick = () =>
+        GetSearchResults(searchInputEl.value, data.page + 1);
     } else nextBtn.classList.add("hidden");
 
     if (data.page === 1) {
       prevBtn.classList.add("hidden");
     } else {
       prevBtn.classList.remove("hidden");
-      prevBtn.onclick = () => GetSearchResults(searchInputEl.value, data.page - 1);
+      prevBtn.onclick = () =>
+        GetSearchResults(searchInputEl.value, data.page - 1);
     }
 
     for (let i = 0; i < resultsPage.length; i++) {
@@ -179,7 +192,8 @@ function ProcessSearchResults(data) {
 
   function processPages(pageNum) {
     const pageBtn = document.createElement("Button");
-    pageBtn.className = "bg-[#00b9ae] hover:bg-[#8ffdf6] mx-1 h-full px-2 py-1h-fit font-extrabold text-1xl text-[#21242d] rounded";
+    pageBtn.className =
+      "bg-[#00b9ae] hover:bg-[#8ffdf6] mx-1 h-full px-2 py-1h-fit font-extrabold text-1xl text-[#21242d] rounded";
     pageBtn.onclick = () => GetSearchResults(searchInputEl.value, pageNum);
     pageBtn.textContent = pageNum;
     if (data.page === pageNum) {
@@ -191,18 +205,23 @@ function ProcessSearchResults(data) {
 }
 
 function clearChildren(element) {
-  while (element.lastElementChild) element.removeChild(element.lastElementChild);
+  while (element.lastElementChild)
+    element.removeChild(element.lastElementChild);
 }
 
 function ShowSearchResultCardUI(movie) {
-  const favIconSelected = new URL("assets/heart-icon-selected.svg", import.meta.url);
+  const favIconSelected = new URL(
+    "assets/heart-icon-selected.svg",
+    import.meta.url
+  );
   const favIcon = new URL("assets/heart-icon.svg", import.meta.url);
   const starIcon = new URL("assets/star-icon.svg", import.meta.url);
   const noImage = new URL("assets/search-no-image.png", import.meta.url);
 
   const imageURL = `https://image.tmdb.org/t/p/w300/${movie.poster_path}`;
   let genre = "";
-  for (let genreId of movie.genre_ids) genre += movieGenres.find((x) => x.id === genreId).name + ", ";
+  for (let genreId of movie.genre_ids)
+    genre += movieGenres.find((x) => x.id === genreId).name + ", ";
   if (genre.length > 0) genre = genre.slice(0, -2); //remove last ", "
 
   const searchCardMarkup = `
@@ -215,7 +234,9 @@ function ShowSearchResultCardUI(movie) {
        ${movie.title}</p>
       <div class="flex justify-start gap-6 items-center">
         <p class="text-md">
-         ${movie.release_date.length > 0 ? movie.release_date.slice(0, -6) : ""}</p>
+         ${
+           movie.release_date.length > 0 ? movie.release_date.slice(0, -6) : ""
+         }</p>
         <span class="flex font-semibold text-sm text-center">
         <img src=${starIcon} alt="star" width="16px" class="flex mr-2"/>
          ${movie.vote_average.toFixed(1)}</span>
@@ -305,13 +326,20 @@ window.addEventListener("load", async () => {
 });
 
 function cardUI(movie) {
+  const favIconSelected = new URL(
+    "assets/heart-icon-selected.svg",
+    import.meta.url
+  );
+  const favIcon = new URL("assets/heart-icon.svg", import.meta.url);
+  const starIcon = new URL("assets/star-icon.svg", import.meta.url);
   const imageURL = `https://image.tmdb.org/t/p//w300_and_h450_bestv2/`;
   const detailsURL = `https://www.themoviedb.org/movie/`;
 
   // console.log(movie);
 
   let genre = "";
-  for (let genreId of movie.genre_ids) genre += movieGenres.find((x) => x.id === genreId).name + ", ";
+  for (let genreId of movie.genre_ids)
+    genre += movieGenres.find((x) => x.id === genreId).name + ", ";
   // console.log(genre);
   if (genre.length > 0) genre = genre.slice(0, -2); //remove last ", "
 
@@ -323,19 +351,26 @@ function cardUI(movie) {
         />
       </a>
       <div class="py-4 px-2">
-        <p id="movie-title" class="font-bold text-xl line-clamp-1 mb-2">${movie.title}</p>
+        <p id="movie-title" class="font-bold text-xl line-clamp-1 mb-2">${
+          movie.title
+        }</p>
         <div class="flex justify-between mb-4">
           <span class="text-md">
-            ${movie.release_date.length > 0 ? movie.release_date.slice(0, -6) : ""}
+            ${
+              movie.release_date.length > 0
+                ? movie.release_date.slice(0, -6)
+                : ""
+            }
           </span>
           <span class="flex font-semibold text-sm text-center">
-            <img src="assets/star-icon.svg" alt="star" width="16px" class="flex mr-2"/>
+          
+            <img src=${starIcon} alt="star" width="16px" class="flex mr-2"/>
             ${movie.vote_average.toFixed(1)}
           </span>
         </div>
         <div class="flex justify-between items-center">
         <button id="add-toList" class="bg-[#00B9AE] rounded-full font-bold p-2 mr-1 hover:cursor-pointer hover:animate-bounce">
-          <img src="src/assets/heart-icon.svg" alt=""  />
+          <img src=${favIcon} alt=""  />
         </button>
         <span class="font-semibold text-sm text-right text-[#00b9ae]">
         ${genre}
@@ -344,12 +379,16 @@ function cardUI(movie) {
       </div>
   `;
 
-  // popularMoviesEl.insertAdjacentHTML("beforeend", card);
-
   // Add Movie to faorites
   const cardDiv = document.createElement("div");
 
-  cardDiv.classList.add("flex", "flex-col", "rounded-[18px]", "bg-[#21242D]", "text-white");
+  cardDiv.classList.add(
+    "flex",
+    "flex-col",
+    "rounded-[18px]",
+    "bg-[#21242D]",
+    "text-white"
+  );
 
   cardDiv.innerHTML = card;
   popularMoviesEl.appendChild(cardDiv); // to insert inside carDiv the variable card from the top
@@ -374,7 +413,7 @@ function cardUI(movie) {
 
   function removeFromFavoritesUI() {
     toList.classList.add = "bg-[#00B9AE]";
-    toList.children[0].src = "./src/assets/heart-icon.svg";
+    toList.children[0].src = favIcon;
     toList.children[0].id = "";
   }
 
@@ -382,7 +421,7 @@ function cardUI(movie) {
     // toList.classList.toggle("bg-amber-400");
     toList.classList.remove = "bg-[#00B9AE]";
     toList.classList.add = "bg-amber-400";
-    toList.children[0].src = "./src/assets/heart-icon-selected.svg";
+    toList.children[0].src = favIconSelected;
     toList.children[0].id = "fav";
   }
 
