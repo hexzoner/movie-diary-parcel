@@ -1,34 +1,26 @@
-// let img = document.createElement("img");
-// img.src = new URL("assets/star-icon.svg", import.meta.url);
-// document.body.appendChild(img);
-
 //------- Serge part -------
-let searchInput = "";
-let movieGenres = [];
-const searchURL = `https://api.themoviedb.org/3/search/movie?include_adult=false&language=en-US&`;
-const genreURL = `https://api.themoviedb.org/3/genre/movie/list?language=en`;
-const detailsURL = `https://www.themoviedb.org/movie/`;
-("page=1&query=");
+let searchInput = ""; //Storing search input
+let movieGenres = []; //Getting genres from the server and storing in the array
+const searchURL = `https://api.themoviedb.org/3/search/movie?include_adult=false&language=en-US&`; //API call for searching
+const genreURL = `https://api.themoviedb.org/3/genre/movie/list?language=en`; //API call for genres names
 
+//Getting DOM elements
 const searchInputEl = document.getElementById("search");
 const searchFormEl = document.getElementById("search-form");
 const cardsContainerEl = document.getElementById("search-results");
 const popularMoviesEl = document.getElementById("cards-container");
 const dialogEl = document.getElementById("search-dialog");
 
+//Adding listeners to Search button and input field
 searchInputEl.addEventListener("input", ProcessSearch);
 searchFormEl.addEventListener("submit", SubmitSearch);
 
 document.onclick = (e) => {
   //Closing search results dialog if clicked outside of it
-
   if (!FindParentElement(dialogEl, e.target) && dialogEl.open) {
     dialogEl.close();
-    if (
-      location.pathname.substring(location.pathname.lastIndexOf("/") + 1) ==
-      "journal.html"
-    )
-      location.reload();
+    //Reload if we close the search popup and we are on te Journal page
+    if (IsJournalPage()) location.reload();
   }
 };
 
@@ -37,11 +29,11 @@ GetGenres(); //API call to get the genres from the server
 // ----Adding and Removing from Favorites using LocalStorage
 let favorites = [];
 const favKey = "search-favorites";
-window.addEventListener(
-  "load",
-  () => (favorites = JSON.parse(localStorage.getItem(favKey)) || [])
-);
 
+//When page is loaded getting favorites from the local storage into array
+window.addEventListener("load", () => (favorites = JSON.parse(localStorage.getItem(favKey)) || []));
+
+//Add / Remove movie from the local storage and local favorites array
 function AddToFavoritesStorage(movie) {
   if (favorites.includes(movie)) return;
   favorites.push(movie);
@@ -60,6 +52,7 @@ function IsFavorite(movie) {
   return false;
 }
 //--------------------------------------------------
+//Main search API call
 function GetSearchResults(keyword, page) {
   const url = `${searchURL}query=${keyword}&page=${page}`;
   fetch(url, {
@@ -75,6 +68,7 @@ function GetSearchResults(keyword, page) {
     .catch((error) => console.error(error.message));
 }
 
+//Get genres API call
 function GetGenres() {
   fetch(genreURL, {
     method: "GET",
@@ -105,36 +99,40 @@ function FindParentElement(elementToFind, startingElement) {
   return false;
 }
 
+//Handling changes in the search input field
 function ProcessSearch(event) {
-  const highlighted = [
-    "bg-[#3ae4de50]",
-    "hover:cursor-pointer",
-    "hover:bg-[#238a83]",
-  ];
+  const highlighted = ["bg-[#3ae4de50]", "hover:cursor-pointer", "hover:bg-[#238a83]"];
   const searchImg = document.getElementById("search-img-wrapper");
 
   searchInput = event.target.value;
   if (searchInput.length > 0) {
+    //Highlighting and setting active search icon button when user enters something into the search field
     searchImg.classList.add(...highlighted);
     searchImg.classList.remove("opacity-50");
     searchImg.onclick = () => GetSearchResults(searchInputEl.value, 1);
   } else {
+    //Disabling search icon button when there is nothing in the search field
     searchImg.classList.remove(...highlighted);
     searchImg.classList.add("opacity-50");
     searchImg.onclick = () => null;
   }
 }
 
+//Starting the search from hitting a button
 function SubmitSearch(event) {
   event.preventDefault();
   GetSearchResults(searchInputEl.value, 1);
 }
 
+//Processing search results from the server
 function ProcessSearchResults(data) {
   const resultsPage = data.results;
   clearChildren(cardsContainerEl);
 
+  //Showing the search popup as a dialog
   dialogEl.show();
+
+  //Initializing the variables
   const searchKeyEl = document.getElementById("search-keyword");
   const searchFoundEl = document.getElementById("search-found");
   const searchTotalPageEl = document.getElementById("search-total-pages");
@@ -143,6 +141,7 @@ function ProcessSearchResults(data) {
   const pagesEl = document.getElementById("search-pages");
   clearChildren(pagesEl);
 
+  //If we found something
   if (data.total_results > 0) {
     searchKeyEl.innerText = `Search results for: "${searchInput}"`;
     searchFoundEl.innerText = "Total results: " + data.total_results;
@@ -166,23 +165,21 @@ function ProcessSearchResults(data) {
 
     if (data.total_pages > 1 && data.page < data.total_pages) {
       nextBtn.classList.remove("hidden");
-      nextBtn.onclick = () =>
-        GetSearchResults(searchInputEl.value, data.page + 1);
+      nextBtn.onclick = () => GetSearchResults(searchInputEl.value, data.page + 1);
     } else nextBtn.classList.add("hidden");
 
     if (data.page === 1) {
       prevBtn.classList.add("hidden");
     } else {
       prevBtn.classList.remove("hidden");
-      prevBtn.onclick = () =>
-        GetSearchResults(searchInputEl.value, data.page - 1);
+      prevBtn.onclick = () => GetSearchResults(searchInputEl.value, data.page - 1);
     }
 
     for (let i = 0; i < resultsPage.length; i++) {
       ShowSearchResultCardUI(resultsPage[i]);
     }
   } else {
-    //Nothing found
+    //If we found nothing
     searchKeyEl.innerText = `Search results for: "${searchInput}"`;
     searchFoundEl.innerText = "Nothing found";
     searchTotalPageEl.innerText = "";
@@ -191,12 +188,13 @@ function ProcessSearchResults(data) {
   }
 
   function processPages(pageNum) {
+    //Showing page number with a link to start new search from its Number
     const pageBtn = document.createElement("Button");
-    pageBtn.className =
-      "bg-[#00b9ae] hover:bg-[#8ffdf6] mx-1 h-full px-2 py-1h-fit font-extrabold text-1xl text-[#21242d] rounded";
+    pageBtn.className = "bg-[#00b9ae] hover:bg-[#8ffdf6] mx-1 h-full px-2 py-1h-fit font-extrabold text-1xl text-[#21242d] rounded";
     pageBtn.onclick = () => GetSearchResults(searchInputEl.value, pageNum);
     pageBtn.textContent = pageNum;
     if (data.page === pageNum) {
+      //Highlighting the button if we are on this page
       pageBtn.classList.remove("bg-[#00b9ae]");
       pageBtn.classList.add("bg-amber-300");
     }
@@ -204,26 +202,28 @@ function ProcessSearchResults(data) {
   }
 }
 
+//To clear previous results
 function clearChildren(element) {
-  while (element.lastElementChild)
-    element.removeChild(element.lastElementChild);
+  while (element.lastElementChild) element.removeChild(element.lastElementChild);
 }
 
+//Main funciton to show movie UI Card
 function ShowSearchResultCardUI(movie) {
-  const favIconSelected = new URL(
-    "assets/heart-icon-selected.svg",
-    import.meta.url
-  );
+  //loading the icons
+  const favIconSelected = new URL("assets/heart-icon-selected.svg", import.meta.url);
   const favIcon = new URL("assets/heart-icon.svg", import.meta.url);
   const starIcon = new URL("assets/star-icon.svg", import.meta.url);
   const noImage = new URL("assets/search-no-image.png", import.meta.url);
 
+  //Path to get the movie image
   const imageURL = `https://image.tmdb.org/t/p/w300/${movie.poster_path}`;
+
+  //Getting genre names based on the genre IDs we get in the movie from the API
   let genre = "";
-  for (let genreId of movie.genre_ids)
-    genre += movieGenres.find((x) => x.id === genreId).name + ", ";
+  for (let genreId of movie.genre_ids) genre += movieGenres.find((x) => x.id === genreId).name + ", ";
   if (genre.length > 0) genre = genre.slice(0, -2); //remove last ", "
 
+  //Main markup for the movie UI Card
   const searchCardMarkup = `
   <div class="flex items-stretch bg-[#21242D] text-white relative">
     <img id="search-image" class="h-[180px] w-[120px] object-cover hover:cursor-pointer"
@@ -234,9 +234,7 @@ function ShowSearchResultCardUI(movie) {
        ${movie.title}</p>
       <div class="flex justify-start gap-6 items-center">
         <p class="text-md">
-         ${
-           movie.release_date.length > 0 ? movie.release_date.slice(0, -6) : ""
-         }</p>
+         ${movie.release_date.length > 0 ? movie.release_date.slice(0, -6) : ""}</p>
         <span class="flex font-semibold text-sm text-center">
         <img src=${starIcon} alt="star" width="16px" class="flex mr-2"/>
          ${movie.vote_average.toFixed(1)}</span>
@@ -254,15 +252,19 @@ function ShowSearchResultCardUI(movie) {
 
   const movieEl = document.createElement("div");
   movieEl.innerHTML = searchCardMarkup;
+
+  //Redirecting to the movie details when clicking on the movie title
   movieEl.querySelector("#search-movie-title").onclick = () => openDetails();
+
   const img = movieEl.querySelector("img");
+  //Redirecting to the movie details when clicking on the movie image
   img.onclick = () => openDetails();
+  //When the movie doesn't have an image, showing the placeholder image instead
   img.onerror = () => (img.src = noImage);
   cardsContainerEl.appendChild(movieEl);
 
-  //add to favorites
+  //add / remove from favorites button
   const favBtn = movieEl.querySelector("#search-fav");
-
   if (IsFavorite(movie)) addToFavoritesUI();
   else removeFromFavoritesUI();
 
@@ -276,20 +278,30 @@ function ShowSearchResultCardUI(movie) {
     }
   };
 
+  //Remove from favorites -- UI part
   function removeFromFavoritesUI() {
     favBtn.children[1].src = favIcon;
     favBtn.children[1].id = "";
   }
 
+  //Add to favorites -- UI part
   function addToFavoritesUI() {
     favBtn.children[1].src = favIconSelected;
     favBtn.children[1].id = "fav";
   }
 
   function openDetails() {
+    const detailsURL = `https://www.themoviedb.org/movie/`;
     window.open(detailsURL + movie.id, "_blank");
   }
 }
+
+function IsJournalPage() {
+  return location.pathname.substring(location.pathname.lastIndexOf("/") + 1) == "journal.html";
+}
+
+//Code below is for the Homepage only. So do not execute the code below if we are on the journal.html.
+if (IsJournalPage()) return;
 
 //------- Erika part -------
 
@@ -326,10 +338,7 @@ window.addEventListener("load", async () => {
 });
 
 function cardUI(movie) {
-  const favIconSelected = new URL(
-    "assets/heart-icon-selected.svg",
-    import.meta.url
-  );
+  const favIconSelected = new URL("assets/heart-icon-selected.svg", import.meta.url);
   const favIcon = new URL("assets/heart-icon.svg", import.meta.url);
   const starIcon = new URL("assets/star-icon.svg", import.meta.url);
   const imageURL = `https://image.tmdb.org/t/p//w300_and_h450_bestv2/`;
@@ -337,8 +346,7 @@ function cardUI(movie) {
   // console.log(movie);
 
   let genre = "";
-  for (let genreId of movie.genre_ids)
-    genre += movieGenres.find((x) => x.id === genreId).name + ", ";
+  for (let genreId of movie.genre_ids) genre += movieGenres.find((x) => x.id === genreId).name + ", ";
   if (genre.length > 0) genre = genre.slice(0, -2); //remove last ", "
 
   const card = `
@@ -349,16 +357,10 @@ function cardUI(movie) {
         />
       </a>
       <div class="py-4 px-2">
-        <p id="movie-title" class="font-bold text-xl line-clamp-1 mb-2">${
-          movie.title
-        }</p>
+        <p id="movie-title" class="font-bold text-xl line-clamp-1 mb-2">${movie.title}</p>
         <div class="flex justify-between mb-4">
           <span class="text-md">
-            ${
-              movie.release_date.length > 0
-                ? movie.release_date.slice(0, -6)
-                : ""
-            }
+            ${movie.release_date.length > 0 ? movie.release_date.slice(0, -6) : ""}
           </span>
           <span class="flex font-semibold text-sm text-center">
           
@@ -380,13 +382,7 @@ function cardUI(movie) {
   // Add Movie to faorites
   const cardDiv = document.createElement("div");
 
-  cardDiv.classList.add(
-    "flex",
-    "flex-col",
-    "rounded-[18px]",
-    "bg-[#21242D]",
-    "text-white"
-  );
+  cardDiv.classList.add("flex", "flex-col", "rounded-[18px]", "bg-[#21242D]", "text-white");
 
   cardDiv.innerHTML = card;
   popularMoviesEl.appendChild(cardDiv); // to insert inside carDiv the variable card from the top
