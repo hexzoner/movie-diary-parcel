@@ -1,8 +1,17 @@
+//Pictures URLs
+const heartIcon = new URL("assets/heart-icon.svg", import.meta.url);
+const ratingIcon = new URL("assets/star-icon.svg", import.meta.url);
+const noPicture = new URL("assets/search-no-image.png", import.meta.url);
+const addIcon = new URL("assets/add-icon.svg", import.meta.url);
+const deleteIcon = new URL("assets/delete-icon.svg", import.meta.url);
+
 // Retrieve the array of favorite movies from local storage
+const localStorageData =
+  JSON.parse(localStorage.getItem("search-favorites")) || [];
 
-const localStorageData = JSON.parse(localStorage.getItem("search-favorites")) || [];
-
-const favoriteMoviesContainer = document.querySelector("#favorite-movies-container");
+const favoriteMoviesContainer = document.querySelector(
+  "#favorite-movies-container"
+);
 
 // Function to convert genre ids to genre name
 const genres = [
@@ -97,9 +106,16 @@ const noCardsParagraph = `<p class="text-gray-700 text-lg font-[lato] px-14 py-4
 
 // Function to generate a card
 function generateCard(i) {
+  const heartIconSelected = new URL(
+    "assets/heart-icon-selected.svg",
+    import.meta.url
+  );
+
   const favoriteMoviesCardMarkup = `<div data-index="${i}" class="movie-card flex flex-col rounded-[18px] bg-[#21242D] text-white">
             <img
-              src="https://media.themoviedb.org/t/p/w300_and_h450_bestv2/${localStorageData[i].poster_path}
+              src="https://media.themoviedb.org/t/p/w300_and_h450_bestv2/${
+                localStorageData[i].poster_path
+              }
               "
               alt="movie name"
               class="rounded-t-[18px] w-full"
@@ -111,12 +127,16 @@ function generateCard(i) {
               </p>
               <!-- Year + Rating -->
               <div class="flex items-center justify-between mb-4">
-                <span class="text-md">${localStorageData[i].release_date.length > 0 ? localStorageData[i].release_date.slice(0, -6) : "Unknown"}</span>
+                <span class="text-md">${
+                  localStorageData[i].release_date.length > 0
+                    ? localStorageData[i].release_date.slice(0, -6)
+                    : "Unknown"
+                }</span>
                 <span
                   class="flex items-center font-semibold text-sm text-center"
                 >
                   <img
-                    src="src/assets/star-icon.svg"
+                    src=${ratingIcon}
                     alt="star"
                     width="16px"
                     class="flex mr-2"
@@ -132,20 +152,23 @@ function generateCard(i) {
               >
                 <!-- Default Icon -->
                 <img
-                  src="./src/assets/heart-icon-selected.svg"
+                  src=${heartIconSelected}
                   alt="Default Icon"
                   class="block group-hover:hidden"
                 />
 
                 <!-- Hover Icon -->
                 <img
-                  src="./src/assets/heart-icon.svg"
+                  src=${heartIcon}
                   alt="Hover Icon"
                   class="hidden group-hover:block"
                 />
               </button>
 
-                <span class="font-semibold text-sm text-right  text-[#00b9ae] max-w-44">${getGenreByIds(genres, localStorageData[i].genre_ids)}</span>
+                <span class="font-semibold text-sm text-right  text-[#00b9ae] max-w-44">${getGenreByIds(
+                  genres,
+                  localStorageData[i].genre_ids
+                )}</span>
               </div>
             </div>
             <!-- Add A Note Section -->
@@ -163,7 +186,7 @@ function generateCard(i) {
                 <button
                   class="add-note-btn flex items-center justify-center rounded-xl bg-gray-100 bg-opacity-20 backdrop-blur-l p-3 hover:animate-bounce"
                 >
-                  <img src="src/assets/add-icon.svg" alt="Add icon" />
+                  <img src=${addIcon} alt="Add icon" />
                 </button>
               </div>
               <div
@@ -174,13 +197,20 @@ function generateCard(i) {
             </div>
           </div>`;
 
-  favoriteMoviesContainer.insertAdjacentHTML("beforeend", favoriteMoviesCardMarkup);
+  favoriteMoviesContainer.insertAdjacentHTML(
+    "beforeend",
+    favoriteMoviesCardMarkup
+  );
 }
 
 function displayNoCards() {
   favoriteMoviesContainer.insertAdjacentHTML("beforeend", noCardsParagraph);
   favoriteMoviesContainer.className = "";
-  favoriteMoviesContainer.classList.add("flex", "items-center", "justify-center");
+  favoriteMoviesContainer.classList.add(
+    "flex",
+    "items-center",
+    "justify-center"
+  );
 }
 
 if (localStorageData.length === 0) {
@@ -245,7 +275,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         saveNoteToLocalStorage(movieCard, noteText);
 
         // Change button image to remove icon
-        imgElement.src = "src/assets/delete-icon.svg";
+        imgElement.src = deleteIcon;
 
         // Add remove functionality
         this.addEventListener(
@@ -253,7 +283,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
           function () {
             removeNoteFromLocalStorage(movieCard, noteText);
             parDiv.removeChild(noteElement);
-            imgElement.src = "src/assets/add-icon.svg"; // Revert to add icon
+            imgElement.src = addIcon; // Revert to add icon
             noteInput.value = "";
           },
           { once: false }
@@ -270,16 +300,22 @@ document.addEventListener("DOMContentLoaded", (event) => {
 });
 
 function saveNoteToLocalStorage(movieCard, noteText) {
-  const cardIndex = Array.from(document.querySelectorAll(".movie-card")).indexOf(movieCard);
+  const cardIndex = Array.from(
+    document.querySelectorAll(".movie-card")
+  ).indexOf(movieCard);
   let allNotes = JSON.parse(localStorage.getItem("movieNotes")) || [];
   allNotes.push({ cardIndex, noteText });
   localStorage.setItem("movieNotes", JSON.stringify(allNotes));
 }
 
 function removeNoteFromLocalStorage(movieCard, noteText) {
-  const cardIndex = Array.from(document.querySelectorAll(".movie-card")).indexOf(movieCard);
+  const cardIndex = Array.from(
+    document.querySelectorAll(".movie-card")
+  ).indexOf(movieCard);
   let allNotes = JSON.parse(localStorage.getItem("movieNotes")) || [];
-  allNotes = allNotes.filter((note) => !(note.cardIndex === cardIndex && note.noteText === noteText));
+  allNotes = allNotes.filter(
+    (note) => !(note.cardIndex === cardIndex && note.noteText === noteText)
+  );
   localStorage.setItem("movieNotes", JSON.stringify(allNotes));
 }
 
@@ -296,7 +332,7 @@ function loadNotesFromLocalStorage() {
       // Set the button image to remove icon
       const addButton = movieCard.querySelector(".add-note-btn");
       const imgElement = addButton.querySelector("img");
-      imgElement.src = "src/assets/delete-icon.svg";
+      imgElement.src = deleteIcon;
 
       // Add remove functionality
       addButton.addEventListener(
@@ -304,7 +340,7 @@ function loadNotesFromLocalStorage() {
         function () {
           removeNoteFromLocalStorage(movieCard, note.noteText);
           parDiv.removeChild(noteElement);
-          imgElement.src = "src/assets/add-icon.svg"; // Revert to add icon
+          imgElement.src = addIcon; // Revert to add icon
         },
         { once: true }
       );

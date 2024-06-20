@@ -1,6 +1,6 @@
 {
   "name": "my-parcel-app",
-  "source": "index.html",
+  "source": "journal.html",
   "scripts": {
     "dev": "parcel",
     "build": "parcel build"
