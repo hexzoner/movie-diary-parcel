@@ -362,7 +362,7 @@ function cardUI(movie) {
           </span>
           <span class="flex font-semibold text-sm text-center">
           
-            <img src=${starIcon} alt="star" width="16px" class="flex mr-2"/>
+            <img src=${starIcon} alt="star" class="flex mr-2"/>
             ${movie.vote_average.toFixed(1)}
           </span>
         </div>
