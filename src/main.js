@@ -334,13 +334,11 @@ function cardUI(movie) {
   const starIcon = new URL("assets/star-icon.svg", import.meta.url);
   const imageURL = `https://image.tmdb.org/t/p//w300_and_h450_bestv2/`;
   const detailsURL = `https://www.themoviedb.org/movie/`;
-
   // console.log(movie);
 
   let genre = "";
   for (let genreId of movie.genre_ids)
     genre += movieGenres.find((x) => x.id === genreId).name + ", ";
-  // console.log(genre);
   if (genre.length > 0) genre = genre.slice(0, -2); //remove last ", "
 
   const card = `
@@ -424,13 +422,4 @@ function cardUI(movie) {
     toList.children[0].src = favIconSelected;
     toList.children[0].id = "fav";
   }
-
-  // toList.onclick = () => {
-  //   // const favKey = "popular-favorites"; // the value for kew to show in local storage can be added as a "String" or save in a variable and use his name favKey
-  //   toList.classList.toggle("bg-amber-400"); // Add newone class
-  //   const movies = JSON.parse(localStorage.getItem(favKey)) || [];
-
-  //   movies.push(movie);
-  //   localStorage.setItem(favKey, JSON.stringify(movies));
-  // };
 } // end of function cardUI
