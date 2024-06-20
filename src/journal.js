@@ -1,7 +1,11 @@
 //Pictures URLs
+const heartIconSelected = new URL(
+  "assets/heart-icon-selected.svg",
+  import.meta.url
+);
 const heartIcon = new URL("assets/heart-icon.svg", import.meta.url);
 const ratingIcon = new URL("assets/star-icon.svg", import.meta.url);
-const noPicture = new URL("assets/search-no-image.png", import.meta.url);
+const noPicture = new URL("assets/No-Image-Placeholder.png", import.meta.url);
 const addIcon = new URL("assets/add-icon.svg", import.meta.url);
 const deleteIcon = new URL("assets/delete-icon.svg", import.meta.url);
 
@@ -105,18 +109,16 @@ const noCardsParagraph = `<p class="text-gray-700 text-lg font-[lato] px-14 py-4
 </p>`;
 
 // Function to generate a card
-function generateCard(i) {
-  const heartIconSelected = new URL(
-    "assets/heart-icon-selected.svg",
-    import.meta.url
-  );
 
+function generateCard(i) {
+  const cardPicture = `https://media.themoviedb.org/t/p/w300_and_h450_bestv2/${localStorageData[i].poster_path}`;
   const favoriteMoviesCardMarkup = `<div data-index="${i}" class="movie-card flex flex-col rounded-[18px] bg-[#21242D] text-white">
             <img
-              src="https://media.themoviedb.org/t/p/w300_and_h450_bestv2/${
-                localStorageData[i].poster_path
-              }
-              "
+              src="${
+                localStorageData[i].poster_path === null
+                  ? noPicture
+                  : cardPicture
+              }"
               alt="movie name"
               class="rounded-t-[18px] w-full"
             />
